@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: resume-ats-analyzer
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: ./start.sh
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: CORS_ORIGIN
+        value: https://resume-ats-analyzer.onrender.com
+    healthCheckPath: /health

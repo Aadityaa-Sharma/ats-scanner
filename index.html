@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Intelligence System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+            color: #2d3748;
+        }
+
+        .navbar {
+            background: white;
+            padding: 16px 40px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-link {
+            color: #1a1a1a;
+            text-decoration: none;
+            font-size: 0.95rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: #1a1a1a;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.25rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .header-section {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .header-section h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #1a202c;
+        }
+
+        .header-section h1 .highlight {
+            color: #1a1a1a;
+        }
+
+        .header-section p {
+            font-size: 1.1rem;
+            color: #718096;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 50px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 30px 20px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 0.95rem;
+            color: #718096;
+        }
+
+        .upload-container {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .upload-area {
+            border: 2px dashed #cbd5e0;
+            border-radius: 12px;
+            padding: 40px 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+            background: #f7fafc;
+            cursor: pointer;
+        }
+
+        .upload-area:hover {
+            border-color: #1a1a1a;
+            background: #f1f1f1;
+        }
+
+        .upload-area.dragover {
+            border-color: #1a1a1a;
+            background: #e5e5e5;
+            transform: scale(1.01);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            margin-bottom: 16px;
+            color: #1a1a1a;
+        }
+
+        .upload-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 6px;
+        }
+
+        .upload-subtext {
+            color: #718096;
+            font-size: 0.9rem;
+        }
+
+        .upload-btn {
+            background: #1a1a1a;
+            color: white;
+            border: none;
+            padding: 14px 32px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 24px;
+            transition: all 0.2s ease;
+        }
+
+        .upload-btn:hover {
+            background: #000000;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(26, 26, 26, 0.3);
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 60px 40px;
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid #e2e8f0;
+            border-top: 4px solid #1a1a1a;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 24px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading h3 {
+            font-size: 1.5rem;
+            margin-bottom: 12px;
+            color: #1a202c;
+        }
+
+        .loading p {
+            color: #718096;
+        }
+
+        .results {
+            display: none;
+        }
+
+        .score-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .score-card {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.2s ease;
+        }
+
+        .score-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .score-icon {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+        }
+
+        .score-value {
+            font-size: 2.25rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .score-label {
+            color: #718096;
+            font-size: 0.95rem;
+        }
+
+        .ats-score { color: #1a1a1a; }
+        .job-match { color: #10b981; }
+        .keywords { color: #f59e0b; }
+        .improvement { color: #06b6d4; }
+
+        .section-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 24px;
+            overflow: hidden;
+        }
+
+        .section-header {
+            background: #f7fafc;
+            padding: 20px 30px;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1a202c;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-content {
+            padding: 30px;
+        }
+
+        .profile-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .profile-card {
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 24px;
+            transition: all 0.2s ease;
+        }
+
+        .profile-card:hover {
+            border-color: #1a1a1a;
+            box-shadow: 0 4px 12px rgba(26, 26, 26, 0.1);
+        }
+
+        .profile-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #1a202c;
+        }
+
+        .compatibility-bar {
+            background: #e2e8f0;
+            border-radius: 8px;
+            height: 8px;
+            margin: 16px 0;
+            overflow: hidden;
+        }
+
+        .compatibility-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #1a1a1a, #404040);
+            border-radius: 8px;
+            transition: width 0.8s ease;
+        }
+
+        .compatibility-score {
+            text-align: center;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 12px;
+        }
+
+        .profile-metrics {
+            display: flex;
+            gap: 16px;
+            font-size: 0.9rem;
+            color: #4b5563;
+            margin-top: 12px;
+        }
+
+        .keywords-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .keyword-tag {
+            background: #e5e5e5;
+            color: #1a1a1a;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .missing-keyword {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .analysis-section {
+            margin-bottom: 30px;
+        }
+
+        .analysis-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #1a202c;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .metric-box {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 4px;
+        }
+
+        .metric-label {
+            font-size: 0.85rem;
+            color: #718096;
+        }
+
+        .info-box {
+            padding: 20px;
+            border-radius: 8px;
+            margin: 16px 0;
+            border-left: 4px solid;
+        }
+
+        .info-box.success {
+            background: #f0fdf4;
+            border-color: #10b981;
+        }
+
+        .info-box.warning {
+            background: #fffbeb;
+            border-color: #f59e0b;
+        }
+
+        .info-box.info {
+            background: #f1f1f1;
+            border-color: #1a1a1a;
+        }
+
+        .info-box h4 {
+            margin-bottom: 12px;
+            font-size: 1rem;
+        }
+
+        .info-box.success h4 { color: #10b981; }
+        .info-box.warning h4 { color: #f59e0b; }
+        .info-box.info h4 { color: #1a1a1a; }
+
+        .info-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .info-box li {
+            padding: 6px 0;
+            color: #4b5563;
+        }
+
+        .action-plan {
+            background: #f7fafc;
+            border-radius: 12px;
+            padding: 30px;
+        }
+
+        .priority-section {
+            margin-bottom: 24px;
+        }
+
+        .priority-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .priority-critical { color: #dc2626; }
+        .priority-high { color: #ea580c; }
+        .priority-medium { color: #10b981; }
+
+        .action-item {
+            background: white;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            color: #4b5563;
+        }
+
+        .predictions {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            margin-top: 24px;
+            text-align: center;
+        }
+
+        .predictions h4 {
+            color: #1a202c;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+
+        .predictions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .prediction-item {
+            padding: 16px;
+        }
+
+        .prediction-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .prediction-value.positive { color: #10b981; }
+        .prediction-value.info { color: #06b6d4; }
+        .prediction-value.warning { color: #f59e0b; }
+
+        .prediction-label {
+            color: #718096;
+            font-size: 0.9rem;
+        }
+
+        .download-section {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .download-section h3 {
+            font-size: 1.5rem;
+            margin-bottom: 12px;
+            color: #1a202c;
+        }
+
+        .download-section p {
+            color: #718096;
+            margin-bottom: 24px;
+        }
+
+        .download-btn {
+            background: #1a1a1a;
+            color: white;
+            border: none;
+            padding: 14px 32px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.2s ease;
+        }
+
+        .download-btn:hover {
+            background: #000000;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(26, 26, 26, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px 15px;
+            }
+
+            .header-section h1 {
+                font-size: 2rem;
+            }
+
+            .navbar {
+                padding: 16px 20px;
+            }
+
+            .upload-container {
+                padding: 30px 20px;
+            }
+
+            .upload-area {
+                padding: 40px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="https://career-elevator.vercel.app" class="nav-link">← Back to Career Elevator</a>
+        <div class="logo">
+            <div class="logo-icon">🎯</div>
+            <span>ATS Resume Scanner</span>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header-section">
+            <h1>Master Your <span class="highlight">Resume Analysis</span></h1>
+            <p>Upload your resume to get detailed ATS compatibility analysis and improvement recommendations powered by our proprietary parsing engine.</p>
+        </div>
+
+        <div class="upload-container" id="uploadSection">
+            <div class="upload-area" id="uploadArea">
+                <div class="upload-icon">📄</div>
+                <div class="upload-text">Drag & Drop your resume here</div>
+                <div class="upload-subtext">or click to browse (PDF files only)</div>
+                <input type="file" id="fileInput" class="file-input" accept=".pdf">
+                <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
+                    Browse Files
+                </button>
+            </div>
+        </div>
+
+        <div class="loading" id="loadingSection">
+            <div class="spinner"></div>
+            <h3>🔍 Analyzing your resume...</h3>
+            <p>Our proprietary engine is examining your resume for ATS compatibility, job matches, and optimization opportunities.</p>
+        </div>
+
+        <div class="results" id="resultsSection">
+            <div class="score-cards">
+                <div class="score-card">
+                    <div class="score-icon">📊</div>
+                    <div class="score-value ats-score" id="atsScore">--</div>
+                    <div class="score-label">ATS Score</div>
+                </div>
+                <div class="score-card">
+                    <div class="score-icon">💼</div>
+                    <div class="score-value job-match" id="jobMatch">--</div>
+                    <div class="score-label">Best Job Match</div>
+                </div>
+                <div class="score-card">
+                    <div class="score-icon">🔧</div>
+                    <div class="score-value keywords" id="keywordsCount">--</div>
+                    <div class="score-label">Technical Keywords</div>
+                </div>
+                <div class="score-card">
+                    <div class="score-icon">📈</div>
+                    <div class="score-value improvement" id="improvementPotential">--</div>
+                    <div class="score-label">Improvement Potential</div>
+                </div>
+            </div>
+
+            <div class="section-card">
+                <div class="section-header">
+                    💼 Job Profile Compatibility
+                </div>
+                <div class="section-content">
+                    <div class="profile-grid" id="profileMatches"></div>
+                </div>
+            </div>
+
+            <div class="section-card">
+                <div class="section-header">
+                    📋 Section Analysis
+                </div>
+                <div class="section-content" id="sectionAnalysis"></div>
+            </div>
+
+            <div class="section-card">
+                <div class="section-header">
+                    🎯 Action Plan
+                </div>
+                <div class="section-content">
+                    <div class="action-plan" id="actionPlan"></div>
+                </div>
+            </div>
+
+            <div class="download-section">
+                <h3>📥 Download Detailed Report</h3>
+                <p>Get a comprehensive PDF report with all analysis details and recommendations</p>
+                <a href="#" class="download-btn" id="downloadBtn">Download Full Report</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let analysisData = null;
+        
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        
+        uploadArea.addEventListener('dragover', handleDragOver);
+        uploadArea.addEventListener('dragleave', handleDragLeave);
+        uploadArea.addEventListener('drop', handleDrop);
+        fileInput.addEventListener('change', handleFileSelect);
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        }
+
+        function handleDragLeave(e) {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFile(files[0]);
+            }
+        }
+
+        function handleFileSelect(e) {
+            const file = e.target.files[0];
+            if (file) {
+                handleFile(file);
+            }
+        }
+
+        function handleFile(file) {
+            if (!file.type.includes('pdf')) {
+                alert('Please select a PDF file');
+                return;
+            }
+
+            showLoading();
+            analyzeResume(file);
+        }
+
+        function showLoading() {
+            document.getElementById('uploadSection').style.display = 'none';
+            document.getElementById('loadingSection').style.display = 'block';
+            document.getElementById('resultsSection').style.display = 'none';
+        }
+
+        function showResults() {
+            document.getElementById('uploadSection').style.display = 'none';
+            document.getElementById('loadingSection').style.display = 'none';
+            document.getElementById('resultsSection').style.display = 'block';
+        }
+
+        // Automatically detect backend URL
+        const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? 'http://localhost:5000'
+            : `${window.location.protocol}//${window.location.hostname}:5000`;
+        
+        console.log('🔗 API Base URL:', API_BASE_URL);
+        
+        function analyzeResume(file) {
+            const formData = new FormData();
+            formData.append('resume', file);
+
+            console.log('📤 Sending request to:', `${API_BASE_URL}/analyze`);
+
+            fetch(`${API_BASE_URL}/analyze`, {
+                method: 'POST',
+                body: formData,
+                mode: 'cors',
+                credentials: 'omit'
+            })
+            .then(response => {
+                console.log('📥 Response status:', response.status);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('✅ Response data:', data);
+                if (data.success) {
+                    analysisData = data.analysis;
+                    displayResults(data.analysis);
+                    showResults();
+                } else {
+                    console.error('❌ Analysis error:', data.error);
+                    alert('Error analyzing resume: ' + (data.error || 'Unknown error'));
+                    document.getElementById('uploadSection').style.display = 'block';
+                    document.getElementById('loadingSection').style.display = 'none';
+                }
+            })
+            .catch(error => {
+                console.error('❌ Fetch error:', error);
+                let errorMessage = 'Connection error: ' + error.message;
+                errorMessage += '\n\n🔧 Troubleshooting:\n';
+                errorMessage += '1. Is backend running? Check terminal for "Server is ready"\n';
+                errorMessage += `2. Try opening: ${API_BASE_URL}/health in a new tab\n`;
+                errorMessage += '3. Check browser console (F12) for detailed errors\n';
+                errorMessage += '4. Ensure no firewall is blocking port 5000';
+                
+                alert(errorMessage);
+                document.getElementById('uploadSection').style.display = 'block';
+                document.getElementById('loadingSection').style.display = 'none';
+            });
+        }
+
+        function displayResults(analysis) {
+            document.getElementById('atsScore').textContent = analysis.ats_score + '/100';
+            document.getElementById('jobMatch').textContent = analysis.best_job_match.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
+            document.getElementById('keywordsCount').textContent = analysis.tech_keywords_found;
+            document.getElementById('improvementPotential').textContent = analysis.improvement_potential + '/100';
+
+            displayProfileMatches(analysis.job_matches);
+            displaySectionAnalysis(analysis.sections);
+            displayActionPlan(analysis.recommendations);
+            
+            const downloadBtn = document.getElementById('downloadBtn');
+            downloadBtn.href = `${API_BASE_URL}/download/${analysis.report_id}`;
+            downloadBtn.target = '_blank';
+        }
+
+        function displayProfileMatches(jobMatches) {
+            const container = document.getElementById('profileMatches');
+            container.innerHTML = '';
+
+            const sortedMatches = Object.entries(jobMatches).sort((a, b) => b[1].score - a[1].score);
+
+            sortedMatches.slice(0, 6).forEach(([profileId, match]) => {
+                const profileCard = document.createElement('div');
+                profileCard.className = 'profile-card';
+                
+                const compatibilityPercent = Math.round(match.score);
+                
+                profileCard.innerHTML = `
+                    <div class="profile-title">${match.title}</div>
+                    <div class="compatibility-bar">
+                        <div class="compatibility-fill" style="width: ${compatibilityPercent}%"></div>
+                    </div>
+                    <div class="compatibility-score">${compatibilityPercent}% Compatible</div>
+                    <div class="profile-metrics">
+                        <div>✅ Required: ${match.required_found}/${match.required_total}</div>
+                        <div>⭐ Preferred: ${match.preferred_found}/${match.preferred_total}</div>
+                    </div>
+                    ${match.missing_required.length > 0 ? `
+                        <div style="margin-top: 16px;">
+                            <div style="font-size: 0.9rem; color: #718096; margin-bottom: 8px;">Missing Critical:</div>
+                            <div class="keywords-list">
+                                ${match.missing_required.slice(0, 3).map(kw => 
+                                    `<span class="keyword-tag missing-keyword">${kw}</span>`
+                                ).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
+                `;
+                
+                container.appendChild(profileCard);
+            });
+        }
+
+        function displaySectionAnalysis(sections) {
+            const container = document.getElementById('sectionAnalysis');
+            container.innerHTML = '';
+
+            Object.entries(sections).forEach(([sectionName, analysis]) => {
+                const sectionDiv = document.createElement('div');
+                sectionDiv.className = 'analysis-section';
+                
+                sectionDiv.innerHTML = `
+                    <div class="analysis-title">📋 ${sectionName.toUpperCase()} Section</div>
+                    
+                    <div class="metrics-grid">
+                        <div class="metric-box">
+                            <div class="metric-value">${analysis.word_count}</div>
+                            <div class="metric-label">Words</div>
+                        </div>
+                        <div class="metric-box">
+                            <div class="metric-value">${analysis.technical_terms.length}</div>
+                            <div class="metric-label">Tech Terms</div>
+                        </div>
+                        <div class="metric-box">
+                            <div class="metric-value">${analysis.action_verbs.length}</div>
+                            <div class="metric-label">Action Verbs</div>
+                        </div>
+                        <div class="metric-box">
+                            <div class="metric-value">${Math.round(analysis.benchmark_score)}/100</div>
+                            <div class="metric-label">Score</div>
+                        </div>
+                    </div>
+
+                    ${analysis.strengths.length > 0 ? `
+                        <div class="info-box success">
+                            <h4>✅ Strengths</h4>
+                            <ul>
+                                ${analysis.strengths.map(strength => `<li>${strength}</li>`).join('')}
+                            </ul>
+                        </div>
+                    ` : ''}
+
+                    ${analysis.issues.length > 0 ? `
+                        <div class="info-box warning">
+                            <h4>⚠️ Issues</h4>
+                            <ul>
+                                ${analysis.issues.map(issue => `<li>${issue}</li>`).join('')}
+                            </ul>
+                        </div>
+                    ` : ''}
+
+                    ${analysis.recommendations.length > 0 ? `
+                        <div class="info-box info">
+                            <h4>💡 Recommendations</h4>
+                            <ul>
+                                ${analysis.recommendations.map(rec => `<li>${rec}</li>`).join('')}
+                            </ul>
+                        </div>
+                    ` : ''}
+                `;
+                
+                container.appendChild(sectionDiv);
+            });
+        }
+
+        function displayActionPlan(recommendations) {
+            const container = document.getElementById('actionPlan');
+            
+            container.innerHTML = `
+                <div class="priority-section">
+                    <div class="priority-header priority-critical">🚨 Critical Priority Actions</div>
+                    ${recommendations.critical.map(action => `
+                        <div class="action-item">${action}</div>
+                    `).join('')}
+                </div>
+
+                <div class="priority-section">
+                    <div class="priority-header priority-high">⚠️ High Priority Actions</div>
+                    ${recommendations.high.map(action => `
+                        <div class="action-item">${action}</div>
+                    `).join('')}
+                </div>
+
+                <div class="priority-section">
+                    <div class="priority-header priority-medium">💡 Medium Priority Improvements</div>
+                    ${recommendations.medium.map(action => `
+                        <div class="action-item">${action}</div>
+                    `).join('')}
+                </div>
+
+                <div class="predictions">
+                    <h4>📈 Predicted Improvements</h4>
+                    <div class="predictions-grid">
+                        <div class="prediction-item">
+                            <div class="prediction-value positive">+35%</div>
+                            <div class="prediction-label">Interview Likelihood</div>
+                        </div>
+                        <div class="prediction-item">
+                            <div class="prediction-value info">+15 pts</div>
+                            <div class="prediction-label">ATS Score Boost</div>
+                        </div>
+                        <div class="prediction-item">
+                            <div class="prediction-value warning">+20%</div>
+                            <div class="prediction-label">Job Match Rate</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Test backend connection on page load
+        window.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Page loaded. Testing backend connection...');
+            fetch(`${API_BASE_URL}/health`, { mode: 'cors' })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('✅ Backend is online:', data);
+                })
+                .catch(error => {
+                    console.warn('⚠️ Backend connection test failed:', error.message);
+                    console.warn('💡 Make sure to run: python app.py');
+                });
+        });
+    </script>
+</body>
+</html>
