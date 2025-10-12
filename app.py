@@ -32,7 +32,7 @@ app = Flask(__name__)
 allowed_origin = os.environ.get('CORS_ORIGIN', 'http://localhost:5173')
 
 # Initialize CORS to only allow requests from your specific frontend URL.
-CORS(app, resources={r"/*": {"origins": [allowed_origin, "https://resume-ats-analyzer.onrender.com"]}}, supports_credentials=True)
+CORS(app, resources={r"/*": {"origins": [allowed_origin, "https://ats-scanner-olam.onrender.com", "https://resume-ats-analyzer.onrender.com"]}}, supports_credentials=True)
 
 
 # --- App Configuration ---

@@ -9,5 +9,5 @@ services:
       - key: PORT
         value: 10000
       - key: CORS_ORIGIN
-        value: https://resume-ats-analyzer.onrender.com
+        value: https://ats-scanner-olam.onrender.com
     healthCheckPath: /health
